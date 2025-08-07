@@ -1,8 +1,8 @@
-program hola
+program Pi
 implicit none
 
-integer :: i,p,pt,pc
-real :: x,y,xn,yn,r
+integer :: i,p,pt
+real :: x,y,xn,yn,r,pc
 Call random_seed
 
 pt = 1000
@@ -13,12 +13,11 @@ do i=1,pt
     xn = 2*x-1
     yn = 2*y-1
     r = xn*xn+yn*yn
-    print*, r
     if (r  .le. 1) then
         p = p+1
     end if
 end do
 
-pc = p/pt
+pc = real(p)/real(pt)
 Print *, 4*pc
-end program hola
+end program Pi
