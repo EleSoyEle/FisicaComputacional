@@ -1,7 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 #Puntos a generar
-num_points = 100
+num_points = 10000
 #Puntos dentro de la circunferencia
 p = 0
 
@@ -38,9 +38,10 @@ x0 = np.linspace(0,2*np.pi,100)
 plt.title("Gráfica de puntos generados")
 plt.scatter(points_x,points_y,c=colors)
 plt.plot(np.cos(x0),np.sin(x0))
+plt.savefig("puntos{}.png".format(num_points))
 plt.show()
 
-
+#Graficamos como va aproximandose a pi
 esp = np.array(range(1,len(p_est)+1))
 plt.title("Aproximación sucesiva de pi")
 plt.grid()
@@ -49,4 +50,5 @@ plt.plot(esp,np.ones_like(esp)*np.pi,dashes=[6,2],label="Aproximación",)
 plt.xlabel("Puntos generados")
 plt.ylabel("Aproximación de pi")
 plt.legend()
+plt.savefig("aprox{}.png".format(num_points))
 plt.show()

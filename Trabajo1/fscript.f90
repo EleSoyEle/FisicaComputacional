@@ -5,7 +5,7 @@ integer :: i,p,pt
 real :: x,y,xn,yn,r,pc
 Call random_seed
 
-pt = 1000
+pt = 100000
 p = 0
 do i=1,pt
     call random_number(x)
