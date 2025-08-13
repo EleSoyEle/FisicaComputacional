@@ -3,7 +3,13 @@ import matplotlib.pyplot as plt
 from scipy.integrate import quad
 
 #Funcion a integrar
-f = lambda x: np.sqrt(1-x**2)
+funcs_and_dom = [
+    [lambda x:1/(x-1)**3,-2,-1],
+    [lambda x:1/np.sqrt(x+1),0,3],
+    [lambda x:1/(1+x**2),1,np.sqrt(3)],
+    [lambda x:np.sin(x)**2,0,np.pi],
+]
+
 
 def integrar_aleatorio(func,num_points,a,b,comparar=False):
     #En caso de que no busquemos grafica para comparar
@@ -28,8 +34,12 @@ def integrar_aleatorio(func,num_points,a,b,comparar=False):
         plt.grid()
         plt.plot(sp,hist)
         plt.plot(sp,np.ones_like(sp)*quad(f,a,b)[0]) #Quad es la integral con scipy
+        plt.savefig("figura{}.png".format(num_points))
         plt.show()
         return prom
 
-
-print(integrar_aleatorio(f,1000,-1,1,True))
+n=int(1e7)
+for i,obj in enumerate(funcs_and_dom):
+    func,a,b = obj[0],obj[1],obj[2]
+    res = integrar_aleatorio(func,n,a,b,False)
+    print("El valor de la integral {} es {}".format(i,res))
