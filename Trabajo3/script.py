@@ -1,5 +1,9 @@
 import numpy as np
 import matplotlib.pyplot as plt
+import scipy
+
+legendre = scipy.special.legendre(4)
+print(legendre(10))
 
 def encontrar_maximo(func,a,b,num_points=100):
     h = (b-a)/num_points
@@ -34,34 +38,30 @@ def encontrar_maximo(func,a,b,num_points=100):
 #f = lambda x:1/(x-1)**3
 #l = encontrar_maximo(f,-2,-1, num_points=1000)
 #print(l)
-f = lambda x:x**3
+#f = lambda x:x**3
+#f = lambda x:x
+#f = lambda x: 1/np.sqrt(1+x)
+#f = lambda x: 1/(1+x**2)
+f = lambda x: np.sin(x)**2
 
 def integrar(func,a,b,num_points=1000):
     extremos = encontrar_maximo(f,a,b,1000)
     max_f = max(extremos)
     min_f = min(extremos)
+    max_abs = max([abs(max_f),abs(min_f)])
     pi = 0
     for i in range(num_points):
         xp = np.random.uniform(a,b)
         
         fx = f(xp)
-
+        yp = np.random.uniform(-max_abs,max_abs)
         if fx <= 0:
-            yp = np.random.uniform(min_f,0)
             if fx<=yp<=0:
                 pi += 1
-        else:
-            yp = np.random.uniform(0,max_f)
+        else: 
             if 0<=yp<=fx:
                 pi += 1
     prop = pi/num_points
-    print(prop)
-    area = 0
-    if max_f < 0:
-        area = (b-a)*(0-min_f)
-    elif max_f>=0 and min_f>=0:
-        area = (b-a,max_f)
-    else:
-        area = (b-a)*(max_f-min_f)
+    area = abs(b-a)*(2*max_abs)
     return area*prop
-print(integrar(f,-2,-1,10000))
+print(integrar(legendre,0,np.pi,10000))
