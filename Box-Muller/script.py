@@ -20,15 +20,22 @@ def MakeRandomNormalNumbers(mean,points):
 #Media
 m = 0 
 #Numero de puntos
-points = 10000
+points = 100
 
 #Numero de columnas
 columns = int(np.sqrt(points))
 
 random_numb = MakeRandomNormalNumbers(m,points)
+
+with open("numeros.txt","w") as file:
+    for l in random_numb:
+        file.write("{}\n".format(l))
+
+
 plt.grid()
 plt.hist(random_numb,columns,edgecolor="black")
 plt.xlabel("Valor en el eje x")
 plt.ylabel("Frecuencia")
 plt.title("Histograma de los números generados")
+plt.savefig("histograma.png")
 plt.show()
