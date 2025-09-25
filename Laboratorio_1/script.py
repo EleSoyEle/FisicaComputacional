@@ -109,7 +109,7 @@ def comparar_metodos(title,func,a,b,pasos=[10,100,1000]):
 
     print('''
     
-    \\textbf{Numero de pasos}\\textbf{Valor real}&\\textbf{Prueba y error}&\\textbf{Promedio de la muestra} \\\\ \\hline
+    \\textbf{Numero de pasos}&\\textbf{Valor real}&\\textbf{Prueba y error}&\\textbf{Promedio de la muestra} \\\\ \\hline
     ''')
     for i in range(len(pasos)):
         print("{} & {} & {} & {} \\\\".format(pasos[i],round(integral_real[0],4),round(rm_2[i],4),round(rm_1[i],4)))
