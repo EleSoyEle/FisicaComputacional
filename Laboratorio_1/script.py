@@ -107,7 +107,13 @@ def comparar_metodos(title,func,a,b,pasos=[10,100,1000]):
     Numero de pasos maximo usado: {}
     '''.format(title,integral_real[0],rm_1[-1],rm_2[-1],pasos[-1]))
 
+    print('''
     
+    \\textbf{Numero de pasos}\\textbf{Valor real}&\\textbf{Prueba y error}&\\textbf{Promedio de la muestra} \\\\ \\hline
+    ''')
+    for i in range(len(pasos)):
+        print("{} & {} & {} & {} \\\\".format(pasos[i],round(integral_real[0],4),round(rm_2[i],4),round(rm_1[i],4)))
+
     sp = range(len(pasos))
     plt.grid()
     plt.title(title)
