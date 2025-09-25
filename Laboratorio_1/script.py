@@ -97,6 +97,17 @@ def comparar_metodos(title,func,a,b,pasos=[10,100,1000]):
         rm_2.append(r2)
 
     integral_real = quad(func,a,b)
+    
+    print('''
+    
+    ---------------{}-------------------
+    Valor de la integral con scipy: {}
+    Promedio de la muestra: {}
+    Prueba y error: {}
+    Numero de pasos maximo usado: {}
+    '''.format(title,integral_real[0],rm_1[-1],rm_2[-1],pasos[-1]))
+
+    
     sp = range(len(pasos))
     plt.grid()
     plt.title(title)
@@ -110,7 +121,6 @@ def comparar_metodos(title,func,a,b,pasos=[10,100,1000]):
     plt.legend()
     plt.savefig("{}.png".format(title))
     plt.show()
-
 
 
 steps = [10,100,1000,10000,50000,100000]
