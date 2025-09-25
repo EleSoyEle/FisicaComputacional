@@ -1,6 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
-
+from scipy.integrate import quad
 '''
 
 --------------Promedio de la muestra-----------------
@@ -96,12 +96,15 @@ def comparar_metodos(title,func,a,b,pasos=[10,100,1000]):
         rm_1.append(r1)
         rm_2.append(r2)
 
+    integral_real = quad(func,a,b)
     sp = range(len(pasos))
     plt.grid()
     plt.title(title)
     plt.xticks(sp,pasos)
     plt.xlabel("Numero de pasos")
     plt.ylabel("Valor calculado")
+    plt.text(1,integral_real[0],"I={}".format(round(integral_real[0],4)))
+    plt.plot(np.ones_like(rm_1)*integral_real[0],label="Valor real")
     plt.plot(rm_1,label="Promedio de la muestra")
     plt.plot(rm_2,label="Prueba y Error")
     plt.legend()
