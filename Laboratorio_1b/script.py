@@ -1,5 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
+from scipy.integrate import quad
+
 
 cmap = plt.cm.get_cmap("magma")
 
@@ -14,8 +16,16 @@ def integrar_aleatorio(func,num_points,a,b,mean,std):
     pdf = np.exp(-(random_points_d-mean)**2/(2*std**2))/np.sqrt(2*np.pi*std)
     y = func(random_points_d)
     prom = np.mean(y/pdf) #Calculamos el promedio
+
+    integral_real = quad(func,a,b)   
+    print('''
     
+    Valor real: {}
+    Valor estimado: {}
+
+    '''.format(integral_real[0],prom)) 
     sp = np.linspace(a,b,1000)
+    plt.title("Gráfica de la función")
     plt.xlabel("Eje x")
     plt.ylabel("Eje y")
     plt.grid()
@@ -29,8 +39,6 @@ def integrar_aleatorio(func,num_points,a,b,mean,std):
     
     return prom
 
-
-
-
+num_points = 1000
 f = lambda x:10*np.exp(-5*(x-3)**4)
-print(integrar_aleatorio(f,200,-10,10,3,3))
+integrar_aleatorio(f,10000,-10,10,3,1)
