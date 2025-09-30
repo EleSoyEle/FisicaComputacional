@@ -8,14 +8,15 @@ N = 20
 min_g = -50
 max_g = 50
 
-v_p = 5
+v_p_x = 0
+v_p_y = 0
 std = 0.5
 
 parts = np.array([ np.random.uniform(min_g+1,max_g-1,2) for i in range(N)
 ],"float32")
 
 v_parts = np.array([
-    np.random.normal(v_p,std,2) for i in range(N)
+    [np.random.normal(v_p_x,std),np.random.normal(v_p_y,std)] for i in range(N)
 ],"float32")
 
 q = [1 for i in range(N)]
@@ -28,7 +29,9 @@ hist_v = [
     v_parts
 ]
 mp = 1
-kb = 1
+kb = 2
+
+hist_forces = []
 
 Temp = [mp*np.mean(v_parts)**2/(N*kb)]
 
@@ -50,13 +53,15 @@ def CalcF(pos0,pos,idx=None):
 
 dt = 0.1
 
+
 def MRU_step():
     new_state_v = []
     new_state_p = []
+    forces = []
     for i in range(len(parts)):
         vn_part_i = np.copy(hist_v[-1][i])
         fx,fy = CalcF(hist_p[-1][i],hist_p[-1],i)
-
+        forces.append([fx,fy])
         pn_part_i = np.copy(hist_p[-1][i])
         pn_part_i[0] += vn_part_i[0]*dt + fx*dt**2/(2*mp)
         pn_part_i[1] += vn_part_i[1]*dt + fy*dt**2/(2*mp)
@@ -83,6 +88,7 @@ def MRU_step():
     #del hist_v[-1]
     hist_p.append(new_state_p)
     hist_v.append(new_state_v)
+    hist_forces.append(forces)
     Temp.append(mp*np.mean(new_state_v)**2/kb)
 
 
@@ -91,17 +97,30 @@ for step in range(steps):
     MRU_step()
 
 
-hist_p = np.array(hist_p)
 
+#Para evitar errorcitos con los vectores
+fe = []
+for i in range(len(parts)):
+    fx,fy = CalcF(hist_p[-1][i],hist_p[-1],i)
+    fe.append([fx,fy])
+
+hist_forces.append(fe)
+
+hist_p = np.array(hist_p)
+hist_forces = np.array(hist_forces)
+norms = np.linalg.norm(hist_forces, axis=2, keepdims=True)
+hist_forces = hist_forces/norms
 fig = plt.figure()
 ax = fig.add_subplot(111)
+
 
 def animate(i):
     ax.clear()
     ax.plot([min_g,min_g,max_g,max_g,min_g],[min_g,max_g,max_g,min_g,min_g])
     ax.text(max_g-10,max_g,"T={}k".format(Temp[i]))
     
-    ax.scatter(hist_p[i,:,0],hist_p[i,:,1],c="b")
+    ax.quiver(hist_p[i,:,0],hist_p[i,:,1],hist_forces[i,:,0],hist_forces[i,:,1],color="black",alpha=0.5)
+    ax.scatter(hist_p[i,:,0],hist_p[i,:,1],c="blue")
     
 ani = FuncAnimation(fig,animate,interval=0.1,frames=len(hist_p))
 plt.show()
