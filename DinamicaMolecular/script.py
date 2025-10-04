@@ -1,6 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.animation import FuncAnimation
+from mpl_toolkits.mplot3d import Axes3D
 
 N = 20
 
@@ -38,17 +39,29 @@ Temp = [mp*np.mean(v_parts)**2/(N*kb)]
 #Parametros del potencial de Lennard-Jones
 sigma = 1
 epsilon = 1
-def CalcF(pos0,pos,idx=None):
+def CalcF(pos0,pos,args_q,idx=None):
     fx = 0
     fy = 0
     for im,p in enumerate(pos):
         if not idx==im:
-            r = ((pos0[0]-p[0])**2+(pos0[1]-p[1])**2)**(1/2)
-            if not r==np.zeros_like(r):
-                fp = 4*epsilon/sigma*(12*np.power(sigma/r,13)-6*np.power(sigma/r,6))
+            try:
+                r = args_q[frozenset([im,idx])][0]
+                fp = args_q[frozenset([im,idx])][1]
 
                 fx = fp*(pos0[0]-p[0])/r
                 fy = fp*(pos0[1]-p[1])/r
+            except KeyError:
+                r = ((pos0[0]-p[0])**2+(pos0[1]-p[1])**2)**(1/2)
+                if not r==np.zeros_like(r):
+                    fp = 4*epsilon/sigma*(12*np.power(sigma/r,13)-6*np.power(sigma/r,6))
+
+                    fx = fp*(pos0[0]-p[0])/r
+                    fy = fp*(pos0[1]-p[1])/r
+
+                    #Detallitos para el lector interesado
+
+                    #Es para evitar hacer calculos extra
+                    args_q[frozenset([im,idx])] = [r,fp] 
     return fx,fy
 
 dt = 0.1
@@ -58,15 +71,17 @@ def MRU_step():
     new_state_v = []
     new_state_p = []
     forces = []
+    args_f = {}
+    args_s = {}
     for i in range(len(parts)):
         vn_part_i = np.copy(hist_v[-1][i])
-        fx,fy = CalcF(hist_p[-1][i],hist_p[-1],i)
+        fx,fy = CalcF(hist_p[-1][i],hist_p[-1],args_f,i)
         forces.append([fx,fy])
         pn_part_i = np.copy(hist_p[-1][i])
         pn_part_i[0] += vn_part_i[0]*dt + fx*dt**2/(2*mp)
         pn_part_i[1] += vn_part_i[1]*dt + fy*dt**2/(2*mp)
 
-        fxn,fyn = CalcF(pn_part_i,hist_p[-1],i)
+        fxn,fyn = CalcF(pn_part_i,hist_p[-1],args_s,i)
 
         vn_part_i[0] += (fxn+fx)*dt/(2*mp)
         vn_part_i[1] += (fyn+fy)*dt/(2*mp)
@@ -92,7 +107,7 @@ def MRU_step():
     Temp.append(mp*np.mean(new_state_v)**2/kb)
 
 
-steps = 1000
+steps = 500
 for step in range(steps):
     MRU_step()
 
@@ -100,8 +115,9 @@ for step in range(steps):
 
 #Para evitar errorcitos con los vectores
 fe = []
+args_fq = {}
 for i in range(len(parts)):
-    fx,fy = CalcF(hist_p[-1][i],hist_p[-1],i)
+    fx,fy = CalcF(hist_p[-1][i],hist_p[-1],args_fq,i)
     fe.append([fx,fy])
 
 hist_forces.append(fe)
