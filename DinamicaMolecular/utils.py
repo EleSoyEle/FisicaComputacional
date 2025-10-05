@@ -1,4 +1,4 @@
-#Nota al lector, muy importante a leer
+#Nota al lector, muy importante leer
 
 # E S T A B A    A B U R R I D O
 
@@ -12,12 +12,10 @@ import numpy as np
 import math
 from typing import List,Dict
 
-from script import CalcF
-
 #Clase que aloje la simulación en si misma
 class Simulator():
     def __init__(self,
-        N:int,dim:int,v_mean:List[float],std:float,min_g:float,max_g:float,
+        N:int,dim:int,v_mean:list[float],std:float,min_g:float,max_g:float,
         mp=1,
         kb=1):
         #Informacion de la simulacion
@@ -33,9 +31,8 @@ class Simulator():
         #Creamos las posiciones y velocidades iniciales del sistema de particulas
         #En adelante estos arrays van a contener la ultima posición y velocidad calculada
         self.positions = np.random.uniform(self.min_g,self.max_g,size=(self.N,self.dim))
-        self.vel = np.array([
-            [np.random.normal([self.v_mean[i],self.std]) for i in range(self.dim)]
-        ])
+        self.vel = np.array(
+            [[np.random.normal(self.v_mean[i],self.std) for i in range(self.dim)] for i in range(self.N)])
 
 
         #Los siguientes arrays son solo para guardar la informacion de la simulacion
@@ -68,40 +65,36 @@ class Simulator():
                         fp = 4*self.epsilon/self.sigma*(12*(sigma_s_r)**13-6*sigma_s_r**6)
 
                         ft = [fp*(particles[idx][i]-particles[p_idx][i])/r for i in range(self.dim)]
-                        args_q[frozenset([p_idx,idx])] = [[r,fp]]
+                        args_q[frozenset([p_idx,idx])] = [r,fp]
         return ft
-    def SimulatorStep(self,dt):
+    def SimulatorStep(self,dt:float):
         args_parts = {}
-        
-        all_positions = []
-        all_vel = []
-        all_forces = []
+        forces_tat = self.history_forces[-1]
+        new_positions = self.positions + self.vel*dt + 0.5*forces_tat*dt**2/self.mp
 
-        for i in range(self.N):
-            #Tomamos la fuerza calculada en el estado anterior
-            forces_t = self.history_forces[-1][i]
+        new_positions[new_positions<self.min_g]=self.max_g-1
+        new_positions[new_positions>self.max_g]=self.min_g+1
 
-            #Calculamos la nueva posicion            
-            new_position = self.positions[i]+self.vel[i]*dt+0.5*forces_t*dt**2/self.mp
+        vel_mid = self.vel+0.5*forces_tat*dt/self.mp
+        forces_tat_next = []
 
-            #Calculamos la velocidad en el instante t+dt/2
-            vel_mid = self.vel[i]+0.5*forces_t*dt/self.mp
-
+        for i in range(self.N):            
             #Calculamos las nuevas fuerzas
-            forces_t_next = np.array(self.CalcForces(new_position,i,args_parts))
+            forces_t_next = np.array(self.CalcForces(new_positions,i,args_parts))
+            forces_tat_next.append(forces_t_next)
+            
+        forces_tat_next = np.array(forces_tat_next)
+        new_vel = vel_mid+0.5*forces_tat_next*dt/self.mp
 
-            #Calculamos la velocidad en el instante t+dt
-            new_vel =  vel_mid+0.5*forces_t_next*dt/self.mp
-
-            #Añadimos lo calculado a sus respectivos arrays
-            all_forces.append(forces_t_next)
-            all_positions.append(new_position)
-            all_vel.append(new_vel)
 
         #Añadimos a los arrays con toda la informacion
-        self.history_forces.append(all_forces)
-        self.history_positions.append(all_positions)
-        self.history_velocity.append(all_vel)
+        self.history_forces.append(forces_tat_next)
+        self.history_positions.append(new_positions)
+        self.history_velocity.append(new_vel)
+
+        #Actualizamos las variables
+        self.positions = np.array(new_positions)
+        self.vel = np.array(new_vel)
 
     #Funcion necesaria para iniciar todas las variables
     def InitSimul(self):
@@ -109,3 +102,11 @@ class Simulator():
         args_init = {}
         for i in range(self.N):
             all_forces.append(np.array(self.CalcForces(self.positions,i,args_init)))
+
+        self.history_forces.append(np.array(all_forces))
+    def GetNormalizedForces(self):
+        n_h = np.array(self.history_forces)
+        return n_h/np.linalg.norm(n_h,axis=2,keepdims=True)
+    def GetNormalizedVelocity(self):
+        n_hv = np.array(self.history_velocity)
+        return n_hv/np.linalg.norm(n_hv,axis=2,keepdims=True)

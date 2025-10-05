@@ -1,0 +1,81 @@
+from utils import Simulator
+import numpy as np
+import matplotlib.pyplot as plt
+import matplotlib.animation as animation
+from matplotlib.animation import FuncAnimation
+import sys
+
+print("En que dimension quieres visualizar todo?[2,3]")
+dim = int(input(":"))
+if dim != 3 and dim != 2:
+    print("Dimension no valida, saliendo del programa")
+    sys.exit()
+
+print("Ingresa el numero de particulas")
+N = int(input(":"))
+
+print("Variables extra como masa,velocidad promedio, masa, etc... se van a tomar por defecto")
+
+print("Ingresa el total de frames a calcular")
+steps = int(input(":"))
+print("Ingresa dt")
+dt = float(input(":"))
+
+print("-"*10)
+print("\n"*2)
+print("Iniciando calculo de simulacion...")
+print("\n"*2)
+
+v_mean = [0.0 for i in range(dim)]
+std = 2
+max_g = 50
+min_g = -50
+
+mp = 1
+kb = 1
+
+simulation = Simulator(N,dim,v_mean,std,min_g,max_g,mp,kb)
+simulation.InitSimul()
+
+for step in range(steps):
+    simulation.SimulatorStep(dt)
+
+normalized_vel = simulation.GetNormalizedVelocity()
+hist_p = np.array(simulation.history_positions)
+
+if dim==3:
+    from mpl_toolkits.mplot3d import Axes3D
+    fig = plt.figure()
+    ax = fig.add_subplot(projection="3d")
+
+    def animate(i):
+        ax.clear()
+        ax.axis("off")
+        ax.set_xlim(min_g,max_g)
+        ax.set_ylim(min_g,max_g)
+        ax.set_zlim(min_g,max_g)
+        ax.quiver(
+            hist_p[i,:,0],hist_p[i,:,1],hist_p[i,:,2],
+            normalized_vel[i,:,0],normalized_vel[i,:,1],normalized_vel[i,:,2]
+            ,color="black",alpha=0.5,length=5)
+        ax.scatter(hist_p[i,:,0],hist_p[i,:,1],hist_p[i,:,2],c="blue")
+
+    ani = FuncAnimation(fig,animate,steps,interval=0.1,blit=False)
+    plt.show()
+else:
+    fig = plt.figure()
+    ax = fig.add_subplot()
+
+    def animate(i):
+        ax.clear()
+        ax.grid(True)
+        ax.set_xlim(min_g,max_g)
+        ax.set_ylim(min_g,max_g)
+        ax.quiver(
+            hist_p[i,:,0],hist_p[i,:,1],
+            normalized_vel[i,:,0],normalized_vel[i,:,1]
+            ,color="black",alpha=0.5)
+        ax.scatter(hist_p[i,:,0],hist_p[i,:,1],c="blue")
+
+    ani = FuncAnimation(fig,animate,steps,interval=0.1,blit=False)
+    plt.show()
