@@ -39,10 +39,10 @@ class Simulator():
         self.history_positions = []
         self.history_velocity = []
         self.history_forces = []
-        self.temperature = []
+        self.temperatures = []
     
         #Lo siguiente es para el potencial de Lennard-Jones
-        self.sigma = 1
+        self.sigma = 0.8
         self.epsilon = 1
 
     #Nota al lector interesado: args_q es un diccionario importante
@@ -104,9 +104,15 @@ class Simulator():
             all_forces.append(np.array(self.CalcForces(self.positions,i,args_init)))
 
         self.history_forces.append(np.array(all_forces))
+    #Las funciones que siguen son solo para el post-iteracion
     def GetNormalizedForces(self):
         n_h = np.array(self.history_forces)
         return n_h/np.linalg.norm(n_h,axis=2,keepdims=True)
     def GetNormalizedVelocity(self):
         n_hv = np.array(self.history_velocity)
         return n_hv/np.linalg.norm(n_hv,axis=2,keepdims=True)
+    def GetTotalTemperatures(self):
+        va = np.array(self.history_velocity)
+        va2 = np.sum([va[:,:,i]**2 for i in range(3)],axis=0)
+        vp =  np.mean(va2,axis=1)
+        return self.mp*vp/(self.dim*self.kb)
