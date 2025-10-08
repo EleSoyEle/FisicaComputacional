@@ -34,9 +34,11 @@ min_g = -50
 
 mp = 1
 kb = 1
+sigma = 0.8
+epsilon = 1
 
 #Creamos simulador
-simulation = Simulator(N,dim,v_mean,std,min_g,max_g,mp,kb)
+simulation = Simulator(N,dim,v_mean,std,min_g,max_g,sigma,epsilon,mp,kb)
 simulation.InitSimul()
 
 #Damos paso a la simulacion por unos cuantos frames
@@ -47,7 +49,7 @@ normalized_vel = simulation.GetNormalizedVelocity()
 hist_p = np.array(simulation.history_positions)
 temps = simulation.GetTotalTemperatures()
 if dim==3:
-    from mpl_toolkits.mplot3d import Axes3D
+    #from mpl_toolkits.mplot3d import Axes3D
     fig = plt.figure()
     ax = fig.add_subplot(projection="3d")
 

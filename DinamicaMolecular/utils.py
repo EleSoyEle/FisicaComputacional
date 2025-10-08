@@ -16,6 +16,8 @@ from typing import List,Dict
 class Simulator():
     def __init__(self,
         N:int,dim:int,v_mean:list[float],std:float,min_g:float,max_g:float,
+        sigma:float,
+        epsilon:float,
         mp=1,
         kb=1):
         #Informacion de la simulacion
@@ -42,8 +44,9 @@ class Simulator():
         self.temperatures = []
     
         #Lo siguiente es para el potencial de Lennard-Jones
-        self.sigma = 0.8
-        self.epsilon = 1
+        self.sigma = sigma
+        self.epsilon = epsilon
+
 
     #Nota al lector interesado: args_q es un diccionario importante
     #Contiene los datos acerca de las distancias y las fuerzas de cada par de particulas
@@ -67,7 +70,10 @@ class Simulator():
                         ft = [fp*(particles[idx][i]-particles[p_idx][i])/r for i in range(self.dim)]
                         args_q[frozenset([p_idx,idx])] = [r,fp]
         return ft
+    #Nota al lector interesado: 
+    #Esta funcion da un salto de dt en la simulacion, unico argumento necesario
     def SimulatorStep(self,dt:float):
+
         args_parts = {}
         forces_tat = self.history_forces[-1]
         new_positions = self.positions + self.vel*dt + 0.5*forces_tat*dt**2/self.mp
@@ -75,6 +81,7 @@ class Simulator():
         new_positions[new_positions<self.min_g]=self.max_g-1
         new_positions[new_positions>self.max_g]=self.min_g+1
 
+        #Velocidad v(t+dt/2) necesaria para el algoritmo velocity verlet
         vel_mid = self.vel+0.5*forces_tat*dt/self.mp
         forces_tat_next = []
 
@@ -82,7 +89,7 @@ class Simulator():
             #Calculamos las nuevas fuerzas
             forces_t_next = np.array(self.CalcForces(new_positions,i,args_parts))
             forces_tat_next.append(forces_t_next)
-            
+               
         forces_tat_next = np.array(forces_tat_next)
         new_vel = vel_mid+0.5*forces_tat_next*dt/self.mp
 
@@ -97,13 +104,17 @@ class Simulator():
         self.vel = np.array(new_vel)
 
     #Funcion necesaria para iniciar todas las variables
+    #Ya que el algoritmo de velocity verlet necesita un valor previo para las fuerzas
+    #IMPORTANTE: LA SIMULACION NO VA A INICIAR SI NO SE EFECTUA ESTA FUNCION
     def InitSimul(self):
-        all_forces = []
-        args_init = {}
-        for i in range(self.N):
-            all_forces.append(np.array(self.CalcForces(self.positions,i,args_init)))
-
-        self.history_forces.append(np.array(all_forces))
+        if len(self.history_forces)==0:
+            all_forces = []
+            args_init = {}
+            for i in range(self.N):
+                all_forces.append(np.array(self.CalcForces(self.positions,i,args_init)))
+            self.history_forces.append(np.array(all_forces))
+        else:
+            print("Las fuerzas iniciales ya fueron calculadas")
     #Las funciones que siguen son solo para el post-iteracion
     def GetNormalizedForces(self):
         n_h = np.array(self.history_forces)
@@ -113,6 +124,6 @@ class Simulator():
         return n_hv/np.linalg.norm(n_hv,axis=2,keepdims=True)
     def GetTotalTemperatures(self):
         va = np.array(self.history_velocity)
-        va2 = np.sum([va[:,:,i]**2 for i in range(3)],axis=0)
+        va2 = np.sum([va[:,:,i]**2 for i in range(self.dim)],axis=0)
         vp =  np.mean(va2,axis=1)
         return self.mp*vp/(self.dim*self.kb)
