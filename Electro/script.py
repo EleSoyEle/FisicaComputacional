@@ -63,9 +63,10 @@ sFtx = sFtx/norm
 sFty = sFty/norm
 
 
-#plt.axis("off")
-plt.pcolormesh(Xp,Yp,sFtphi) #Mostramos el potencial
+plt.figure(figsize=(7,7))
+plt.axis("off")
+plt.pcolormesh(Xp,Yp,sFtphi,cmap="berlin") #Mostramos el potencial
 plt.quiver(X,Y,sFtx,sFty,color="white") #Mostramos los vectores del campo electrico
-plt.scatter(part_pos[:,0],part_pos[:,1],alpha=0.5) #Mostramos puntos donde hay particulas
-plt.savefig("campo_electrico.png")
+#plt.scatter(part_pos[:,0],part_pos[:,1],alpha=0.5) #Mostramos puntos donde hay particulas
+plt.savefig("campo_electrico.png",dpi=300)
 plt.show()
