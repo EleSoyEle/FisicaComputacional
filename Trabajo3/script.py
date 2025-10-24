@@ -2,8 +2,6 @@ import numpy as np
 import matplotlib.pyplot as plt
 import scipy
 
-legendre = scipy.special.legendre(4)
-print(legendre(10))
 
 def encontrar_maximo(func,a,b,num_points=100):
     h = (b-a)/num_points
@@ -42,7 +40,7 @@ def encontrar_maximo(func,a,b,num_points=100):
 #f = lambda x:x
 #f = lambda x: 1/np.sqrt(1+x)
 #f = lambda x: 1/(1+x**2)
-f = lambda x: np.sin(x)**2
+f = lambda x: np.exp(-x**2/2)/np.sqrt(2*np.pi)
 
 def integrar(func,a,b,num_points=1000):
     extremos = encontrar_maximo(f,a,b,1000)
@@ -64,4 +62,4 @@ def integrar(func,a,b,num_points=1000):
     prop = pi/num_points
     area = abs(b-a)*(2*max_abs)
     return area*prop
-print(integrar(legendre,0,np.pi,10000))
+print(integrar(f,3,10,10000))

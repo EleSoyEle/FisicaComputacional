@@ -20,7 +20,7 @@ def integrar_aleatorio(title,func,num_points,a,b,mean,std):
     integral_real = quad(func,a,b)   
     print('''
 
-    
+
     {}
     ------------------------------
     Valor real: {}
@@ -46,8 +46,8 @@ def integrar_aleatorio(title,func,num_points,a,b,mean,std):
 num_points = 1000
 funcs = [
     [lambda x:10*np.exp(-5*(x-3)**4),-20,20,3,1],
-    [lambda x:1/np.sqrt(2*np.pi)*np.exp(-x**2/2),1,3,2,0.1],
-    [lambda x:1/np.sqrt(2*np.pi)*np.exp(-x**2/2),3,20,2,1],
+    [lambda x:1/np.sqrt(2*np.pi)*np.exp(-x**2/2),1,3,2,0.2],
+    [lambda x:1/np.sqrt(2*np.pi)*np.exp(-x**2/2),3,20,4,1],
     [lambda x:np.exp(-(x-6)**2/2),-20,20,6,1]
 ]
 
