@@ -34,7 +34,7 @@ min_g = -50
 
 mp = 1
 kb = 1
-sigma = 0.8
+sigma = 1
 epsilon = 1
 
 #Creamos simulador
@@ -66,7 +66,16 @@ if dim==3:
             ,color="black",alpha=0.5,length=5)
         ax.scatter(hist_p[i,:,0],hist_p[i,:,1],hist_p[i,:,2],c="blue")
 
+    print("-"*50)
+    print("Se va a guardar una animacion, escribe el nombre del archivo")
+    
+    filename = str(input(":"))
+    while not filename.endswith(".mp4"):
+        print("Nombre no valido, debe terminar con \".mp4\"")
+        filename = str(input(":"))
+    
     ani = FuncAnimation(fig,animate,steps,interval=0.1,blit=False)
+    ani.save(filename,writer='ffmpeg',fps=30,dpi=400)
     plt.show()
 else:
     fig = plt.figure()

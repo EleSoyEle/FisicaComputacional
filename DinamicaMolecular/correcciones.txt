@@ -1,0 +1,33 @@
+Momento anterior: [-0.278273  -0.0994626 -0.1082776] 
+Momento nuevo: [ 0. -0. -0.] 
+ 
+Momento anterior: [ 0.e+00 -1.e-05  1.e-05] 
+Momento nuevo: [-0. -0.  0.] 
+ 
+Momento anterior: [ 0.e+00 -1.e-05  1.e-05] 
+Momento nuevo: [-0. -0.  0.] 
+ 
+Momento anterior: [ 0.e+00 -1.e-05  1.e-05] 
+Momento nuevo: [-0. -0.  0.] 
+ 
+Momento anterior: [ 0.e+00 -1.e-05  1.e-05] 
+Momento nuevo: [-0. -0.  0.] 
+ 
+Momento anterior: [ 0.e+00 -1.e-05  1.e-05] 
+Momento nuevo: [-0. -0.  0.] 
+ 
+Momento anterior: [ 0.e+00 -1.e-05  1.e-05] 
+Momento nuevo: [-0. -0.  0.] 
+ 
+Momento anterior: [ 0.e+00 -1.e-05  1.e-05] 
+Momento nuevo: [-0. -0.  0.] 
+ 
+Momento anterior: [ 0.e+00 -1.e-05  1.e-05] 
+Momento nuevo: [-0. -0.  0.] 
+ 
+Momento anterior: [ 0.e+00 -1.e-05  1.e-05] 
+Momento nuevo: [-0. -0.  0.] 
+ 
+Momento anterior: [ 0.e+00 -1.e-05  1.e-05] 
+Momento nuevo: [-0. -0.  0.] 
+ 
