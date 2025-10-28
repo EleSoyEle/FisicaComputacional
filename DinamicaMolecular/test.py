@@ -1,4 +1,4 @@
-from utils import Simulator
+from utils import Simulator,RemoveE
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.animation as animation
@@ -28,7 +28,7 @@ print("\n"*2)
 
 #Parametros de la simulacion
 v_mean = [0.0 for i in range(dim)]
-std = 2
+std = 1
 max_g = 50
 min_g = -50
 
@@ -48,6 +48,25 @@ for step in range(steps):
 normalized_vel = simulation.GetNormalizedVelocity()
 hist_p = np.array(simulation.history_positions)
 temps = simulation.GetTotalTemperatures()
+
+Ec = simulation.GetAllKineticEnergy()
+Ep = simulation.GetAllPotentialEnergy()
+Ec_cl = RemoveE(Ec)
+Ep_cl = RemoveE(Ep[:-1])
+Et = Ec_cl+Ep_cl
+
+
+sp = range(steps)
+plt.title("Energia a lo largo del tiempo")
+plt.plot(sp,Ec_cl,label="Energia cinetica")
+plt.plot(sp,Ep_cl,label="Energia potencial")
+plt.plot(sp,np.ones_like(sp)*Et,label="Energia total")
+plt.xlabel("Numero de pasos")
+plt.ylabel("Energia(J)")
+plt.legend()
+plt.show()
+
+
 if dim==3:
     #from mpl_toolkits.mplot3d import Axes3D
     fig = plt.figure()
@@ -75,7 +94,7 @@ if dim==3:
         filename = str(input(":"))
     
     ani = FuncAnimation(fig,animate,steps,interval=0.1,blit=False)
-    ani.save(filename,writer='ffmpeg',fps=30,dpi=400)
+    #ani.save(filename,writer='ffmpeg',fps=30,dpi=400)
     plt.show()
 else:
     fig = plt.figure()
