@@ -17,7 +17,7 @@ N = int(input(":"))
 print("Variables extra como masa,velocidad promedio, masa, etc... se van a tomar por defecto")
 
 print("Ingresa el total de frames a calcular")
-steps = int(input(":"))
+steps = int(input(":")) 
 print("Ingresa dt")
 dt = float(input(":"))
 
@@ -28,7 +28,7 @@ print("\n"*2)
 
 #Parametros de la simulacion
 v_mean = [0.0 for i in range(dim)]
-std = 1
+std = 0.5
 max_g = 50
 min_g = -50
 
