@@ -25,7 +25,7 @@
 #define ORANGE  0xFE00  
 #define POISON  0x68FF
 
-//Creamos el objeto display que contiene las funciones para la pabtalla
+//Creamos el objeto display que contiene las funciones para la pantalla
 Adafruit_ST7735 display(TFT_CS,TFT_DC,TFT_RST);
 
 //Variables para la lectura del voltaje
