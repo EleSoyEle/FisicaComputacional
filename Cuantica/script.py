@@ -3,18 +3,21 @@ import matplotlib.pyplot as plt
 from scipy.special import hermite
 import math
 
-res = 100
-x = np.linspace(-1,1,res)
-mw2 = 16.5
-print("Graficando la funcion potencial")
-plt.grid()
-plt.xlabel("Posición x(m)")
-plt.ylabel("Potencial V(J)")
-plt.plot(x,mw2*x**2)
-plt.show()
+plt.style.use("ggplot")
 
 m = 1
 w = 1
+
+res = 100
+x = np.linspace(-5,5,res)
+print("Graficando la funcion potencial")
+#plt.grid()
+plt.xlabel("Posición x(m)")
+plt.ylabel("Potencial V(J)")
+plt.plot(x,x**2)
+plt.savefig("potencial.png")
+plt.show()
+
 
 sqpi = math.sqrt(np.pi)
 
@@ -38,10 +41,11 @@ harms = [HarmonicOscilatorObj(n) for n in range(0,5)]
 min_r = 0
 max_r = 4
 
-plt.grid()
+#plt.grid()
 plt.title(r"Eigenfunciones $\psi_n(x)$")
 plt.xlabel(r'Posición x(m)')
 plt.ylabel(r'$\psi(x)$')
+#plt.plot(x,m*w*x**2,alpha=0.1,label="V(x)")
 for i in range(min_r,max_r):
     psi_n = harms[i](eps)
     plt.plot(x,psi_n,label=r"$E_{}$".format(i))
@@ -61,7 +65,7 @@ for i in range(min_r,max_r):
     plt.plot(x,psi_n**2,label=r"$E_{}$".format(i))
 
 plt.legend()
-plt.savefig("figura_completa.png")
+plt.savefig("densidad.png")
 plt.show()
 
 
@@ -72,5 +76,6 @@ for i in range(min_r,max_r):
     plt.plot(x,psi_n)
     plt.xlabel(r"Posición x(m)")
     plt.ylabel(r"$\psi(x)$")
+    plt.savefig("wf_{}.png".format(i))
     plt.show()
 

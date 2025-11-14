@@ -2,18 +2,18 @@ import numpy as np
 import matplotlib.pyplot as plt
 from scipy.special import sph_harm_y,assoc_laguerre
 
-r_res = 1000
+r_res = 100
 th_res = 100
-ph_res = 1000
+ph_res = 100
 r = np.linspace(0,100,r_res)
 phi = np.linspace(0,2*np.pi,ph_res,endpoint=False)
 theta = np.linspace(0,np.pi,th_res)
 
 R,Phi,Theta = np.meshgrid(r,phi,theta)
 #Para estados de energia
-n = 5
-l = 2
-m = 1
+n = 2
+l = 1
+m = -1
 #Parametros del atomo
 Z = 1
 m_e = 1
@@ -39,7 +39,7 @@ max_psi = np.max(psi_n)
 
 
 acc_points = []
-num_points = 10000
+num_points = 1000
 gen_points = 0
 while gen_points<num_points:
     i = np.random.randint(0,r_res)
