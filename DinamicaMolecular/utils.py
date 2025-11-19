@@ -66,7 +66,7 @@ class Simulator():
                 except KeyError:
                     r = math.sqrt(sum([(particles[idx][i]-particles[p_idx][i])**2 for i in range(self.dim)]))
                     ac_pots.append(self.GetLennardJonesPotentialValue(r))
-                    if not r == 0.0:
+                    if not r < 1e-4:
                         sigma_s_r = self.sigma/r
                         fp = 4*self.epsilon/self.sigma*(12*(sigma_s_r)**13-6*sigma_s_r**6)
 
@@ -74,8 +74,10 @@ class Simulator():
                         args_q[frozenset([p_idx,idx])] = [r,fp]
         return ft,ac_pots
     def GetLennardJonesPotentialValue(self,r:float):
-        return 4*self.epsilon*((self.sigma/r)**12-(self.sigma/r)**6)
-
+        if not r==0.0:
+            return 4*self.epsilon*((self.sigma/r)**12-(self.sigma/r)**6)
+        else:
+            return 0.0
     #Nota al lector interesado: 
     #Esta funcion da un salto de dt en la simulacion, unico argumento necesario
     def SimulatorStep(self,dt:float):
@@ -155,6 +157,18 @@ class Simulator():
         vt = np.sum(vp2i,axis=1)
         Ek = 0.5*self.mp*vt
         return Ek
+    def MakePovrayVideo(self,idx):
+        povfile = "particles.pov"
+        with open(povfile, "w") as f:
+            f.write("#include \"colors.inc\" \n")
+            f.write("camera {location <75,75,75> look_at <0,0,0> } \n ")
+            f.write("light_source { <0,0,100> color White }\n\n ")
+
+            for part_i in range(self.N):
+                pos_part = self.history_positions[idx][part_i]
+                str_a = f'sphere {{ <{pos_part[0]},{pos_part[1]},{pos_part[2]}>, 1 texture {{ pigment {{ color Blue }} }} }} \n'
+                f.write(str_a)
+            
     #Comentario: No se añadio una funcion que calcule la energia total por dos motivos
     # 1. Es constante
     # 2. Es redundante
